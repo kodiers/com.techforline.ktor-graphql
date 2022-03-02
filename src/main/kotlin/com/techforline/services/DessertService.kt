@@ -5,6 +5,7 @@ import com.techforline.models.Dessert
 import com.techforline.models.DessertInput
 import com.techforline.models.DessertsPage
 import com.techforline.repository.DessertRepository
+import com.techforline.repository.ReviewRepository
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.UUID
@@ -13,12 +14,15 @@ class DessertService: KoinComponent {
 
     private val client: MongoClient by inject()
     private val repo: DessertRepository = DessertRepository(client)
+    private val reviewRepo = ReviewRepository(client)
 
     fun getDessertsPage(page: Int, size: Int): DessertsPage {
         return repo.getDessertsPage(page, size)
     }
 
     fun getDessert(id: String): Dessert {
+        val dessert = repo.getById(id)
+        dessert.reviews = reviewRepo.getReviewsByDessertId(dessertId = id)
         return repo.getById(id)
     }
 
