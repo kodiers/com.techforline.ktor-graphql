@@ -23,7 +23,7 @@ class DessertService: KoinComponent {
     fun getDessert(id: String): Dessert {
         val dessert = repo.getById(id)
         dessert.reviews = reviewRepo.getReviewsByDessertId(dessertId = id)
-        return repo.getById(id)
+        return dessert
     }
 
     fun createDessert(dessertInput: DessertInput, userId: String): Dessert {
