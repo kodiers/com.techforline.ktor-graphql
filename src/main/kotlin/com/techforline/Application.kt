@@ -2,9 +2,13 @@ package com.techforline
 
 import com.apurebase.kgraphql.GraphQL
 import com.techforline.di.mainModule
+import com.techforline.graphql.authSchema
 import com.techforline.graphql.dessertSchema
+import com.techforline.graphql.profileSchema
 import com.techforline.graphql.reviewSchema
+import com.techforline.services.AuthService
 import com.techforline.services.DessertService
+import com.techforline.services.ProfileService
 import com.techforline.services.ReviewService
 import io.ktor.application.*
 import org.koin.core.context.startKoin
@@ -21,11 +25,22 @@ fun Application.module(testing: Boolean = false) {
     install(GraphQL) {
         val dessertService = DessertService()
         val reviewService = ReviewService()
+        val authService = AuthService()
+        val profileService = ProfileService()
 
         playground = true
+
+        context { call ->
+            authService.verifyToken(call)?.let { +it }
+            +log
+            +call
+        }
+
         schema {
             dessertSchema(dessertService)
             reviewSchema(reviewService)
+            authSchema(authService)
+            profileSchema(profileService)
         }
     }
 }
