@@ -5,12 +5,14 @@ val logback_version: String by project
 plugins {
     application
     kotlin("jvm") version "1.6.10"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 group = "com.techforline"
 version = "0.0.1"
 application {
     mainClass.set("com.techforline.ApplicationKt")
+    mainClassName = "io.ktor.server.netty.EngineMain"
 }
 
 repositories {
@@ -31,4 +33,12 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
+}
+
+tasks.withType<Jar> {
+    manifest {
+        attributes (
+            mapOf("Main-Class" to application.mainClassName)
+        )
+    }
 }
